@@ -1,0 +1,158 @@
+# Test Plan Outline for Manual / Exploratory testing of SnippetSentry 'Manage Users' Features
+
+## 1. Introduction
+- Purpose: To verify the functionality of user Create, Read, Update, and Delete (CRUD) features in the UI.
+- URL:  https://beta.snippetsentry.com/app/client/users
+- Scope: Covers functional, UI, and edge case testing for user management.
+
+## 2. Assumptions
+- The user performing the tests has appropriate permissions to manage users.
+- The application is deployed in a stable environment with no ongoing maintenance or updates during testing.
+- Test data used for validation is pre-approved and does not conflict with existing data in the system.
+- All required backend services and APIs are functional and accessible.
+- The browser and device used for testing meet the application's minimum requirements.
+
+## 3. Test Scenarios
+
+### 3.1 User Creation
+- Verify the ability to create a new user with valid data.
+- Test error handling for invalid input (e.g., missing required fields, invalid email format).
+- Check UI feedback for successful and failed user creation.
+- Validate duplicate user prevention.
+
+#### 3.1.1 Create user with minimum valid data
+- Navigate to: https://beta.snippetsentry.com/app/client/users
+- Click 'Manage Users' button
+- Click 'ADD USER' button
+- Populate the following fields with valid data:
+    - First Name
+    - Last Name
+    - Email
+- Click 'SAVE' button
+Verify:
+    - Pop-up message: "User added successfully"
+    - New user is added to 'User List' with Status = 'Pending'
+
+#### 3.1.2 Create user with missing 'required' data
+- Navigate to: https://beta.snippetsentry.com/app/client/users
+- Click 'Manage Users' button
+- Click 'ADD USER' button
+- Populate the following fields with valid data:
+    - First Name ONLY
+- Click 'SAVE' button
+Verify:
+    - Last Name field is shown in RED w/ message "This field is required"
+    - Email field is shown in RED w/ message "This field is required"
+
+---
+REPEATE THE ABOVE SCENARIO WITH DIFFERENT COMBINATIONS OF REQUIRED DATA MISSING
+---
+
+#### 3.1.3 Create user with invalid Email format
+- Navigate to: https://beta.snippetsentry.com/app/client/users
+- Click 'Manage Users' button
+- Click 'ADD USER' button
+- Populate the following fields with valid data:
+    - First Name
+    - Last Name
+    - Email w/ invalid format (i.e. 'email.email.com' OR 'email@email,net')
+- Click 'SAVE' button
+Verify:
+    - Email field is shown in RED w/ message "The Email field must be a valid email"
+
+---
+NOTE: Additional scenarios should be added for the following:
+- Create 'Admin' user 
+- Create 'non-Admin' user 
+- Create user and select 'Send email invite' option
+    - verify email is sent to the new user 
+- Create user with phone number
+    - verify phone number formatting / error handling
+- Create user with 'Notes'
+    - verify string length limits in 'Notes' field
+    - verify any special character limitations in the 'Notes' field 
+    - verify error handling if any boundaries (above) are violated
+- Create user, then 'Cancel' before saving the new record
+    - verify data is not persisted
+---
+
+### 3.2 User Update
+- Verify the ability to update an existing user's details.
+- Test error handling for invalid updates (e.g., invalid email format, empty fields).
+- Ensure changes are reflected in the UI and database.
+- Validate permissions for updating user details.
+
+#### 3.2.1 Update User from Admin to non-Admin user
+- Navigate to: https://beta.snippetsentry.com/app/client/users
+- Click 'Manage Users' button
+- Select (click on user 'Name' in the User List for) an existing test user with 'Admin' privileges
+Verify:
+    - 'Modify User' dialogue appears
+- Deselect 'Admin' option
+Verify:
+    - Message appears stating "This will update the user's permission."
+Click 'SAVE' button
+Verify:
+    - Pop-up message "User Updated successfully"
+- Logout
+- Login as the user that was updated above
+Verify: 
+    - User is no longer able to:
+        - access 'Dashboard'
+        - access 'Manage Users'
+        - access 'Advanced Features'
+        - access 'Admin Resources'
+
+---
+NOTE: There should be several other scenarios that cover updating other fields for the user, such as
+- Update: First Name
+- Update: Last Name
+- Update: Email
+    - verify the Email field CANNOT be updated
+- Update: Phone number
+- Update: Notes
+- Reset Password
+    - verify workflow associated with password update
+- Suspend
+    - verify status on 'User List' page
+---
+
+### 3.3 User Deletion
+- Verify the ability to delete a user.
+- Confirm UI feedback for successful and failed deletions.
+- Ensure deleted users are no longer accessible in the system.
+- Test edge cases (e.g., deleting a user currently in use).
+
+#### 3.3.1 Delete a User 
+- Navigate to: https://beta.snippetsentry.com/app/client/users
+- Select (click on user 'Name' in the User List for) an existing test user that you want to delete
+Verify:
+    - 'Modify User' dialogue appears
+- Click 'DELETE' button
+Verify:
+    - Pop-up 'Please Confirm' message appears
+Click 'CONFIRM' button
+Verify:
+    - Pop-up message "User Status Updated successfully"
+Verify: 
+    - User no longer appears in the User List
+
+### 3.4 Viewing User Details
+- Verify the ability to view user details in the UI.
+- Ensure all user information is displayed correctly.
+- Validate permissions for viewing user details.
+
+## 4. Test Data
+- List of valid and invalid test data for user creation, update, and deletion.
+
+## 5. Test Environment
+- Browser compatibility (e.g., Chrome, Firefox, Safari).
+- Device compatibility (e.g., desktop, tablet, mobile).
+
+## 6. Reporting
+- Process for logging and tracking bugs.
+- Metrics for test coverage and success rate.
+
+## 7. Conclusion
+- Summary of testing outcomes.
+- Recommendations for improvements.
