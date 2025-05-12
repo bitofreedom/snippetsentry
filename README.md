@@ -1,12 +1,25 @@
-# snippetsentry
+# SnippetSentry
 Technical Assessment
 
 
+# Cypress
 
-create a Playwright project to be used for testing the Manage Users features on the following web page:
-https://beta.snippetsentry.com/app/client/users
+Install:
+npm install cypress --save-dev
 
+Open Cypress:
+npx cypress open
 
-2nd User:
+OR
+
+npm run cy:open
+
+# My Test Users
+
+Test User Admin:
 Email: bitofreedom@gmail.com
 PWD: Password123!
+
+Test User non-Admin:
+Email: 
+PWD:

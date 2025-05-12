@@ -137,6 +137,15 @@ Verify:
 Verify: 
     - User no longer appears in the User List
 
+#### 3.3.1 Current user cannot delete themselves through Manage Users 
+- Navigate to: https://beta.snippetsentry.com/app/client/users
+- Select (click on user 'Name' in the User List for) the current user that is logged-in
+Verify:
+    - 'Modify User' dialogue appears
+- Click 'DELETE' button
+Verify:
+    - Pop-up ERROR message appears stating "The user cannot update their own status"
+
 ### 3.4 Viewing User Details
 - Verify the ability to view user details in the UI.
 - Ensure all user information is displayed correctly.
