@@ -31,9 +31,7 @@ describe('Manage Users', () => {
       faker.name.firstName(),
       faker.name.lastName(),
       faker.internet.email(),
-      // faker.phone.number('###-###-####'),
-      // faker.phone.number({ style: 'national' }),
-      faker.string.numeric(10),
+      `303${faker.string.numeric(7)}`,
       false,
       false,
       faker.lorem.sentence()

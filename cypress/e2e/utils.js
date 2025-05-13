@@ -51,27 +51,71 @@ export function checkForConfirmation() {
  * Creates a new user by filling out and submitting the user creation form.
  * @param {Object} userProfile - The profile information for the new user.
  */
-export function createUser(userProfile) {
+export function createUser({ admin, sendEmailInvite, firstName, lastName, email, mobilePhone, notes }) {
   cy.get('#button-addNewUser > .v-btn__content').click();
-  if(userProfile.admin) {
-    cy.contains('Admin').should('be.visible').should('not.be.checked').check();
-  }
-  else {
-    cy.contains('Admin').should('be.visible').should('not.be.checked');
-  }
-  if(userProfile.sendEmailInvite) {
-    cy.contains('Send email invite').should('be.visible').should('not.be.checked').check();
-  }
-  else {
-    cy.contains('Send email invite').should('be.visible').should('not.be.checked');
-  }
-  cy.get('#textfield-adduser-firstname').clear().type(userProfile.firstName);
-  cy.get('#textfield-adduser-lastname').clear().type(userProfile.lastName);
-  cy.get('#textfield-adduser-email').clear().type(userProfile.email);
-  cy.get('[class="vti__input vti__phone"]').clear().type(userProfile.mobilePhone);
-  cy.get('#textfield-adduser-notes').clear().type(userProfile.notes);
+
+  ['Admin', 'Send email invite'].forEach(label => 
+    cy.contains(label)
+      .should('be.visible')
+      .should('not.be.checked')
+      .then(($el) => (label === 'Admin' ? admin : sendEmailInvite) && $el.click())
+  );
+
+  cy.get('#textfield-adduser-firstname').clear().type(firstName);
+  cy.get('#textfield-adduser-lastname').clear().type(lastName);
+  cy.get('#textfield-adduser-email').clear().type(email);
+  mobilePhone && cy.get('.vti__input.vti__phone').clear().type(mobilePhone);
+  notes && cy.get('#textfield-adduser-notes').clear().type(notes);
+  
   cy.get('[data-testid="save-user"]').click();
-  }
+}
+
+// export function createUser(userProfile) {
+//   cy.get('#button-addNewUser > .v-btn__content').click();
+  
+//   if(userProfile.admin) {
+//     cy.contains('Admin').should('be.visible').should('not.be.checked').check();
+//   }
+//   else {
+//     cy.contains('Admin').should('be.visible').should('not.be.checked');
+//   }
+//   if(userProfile.sendEmailInvite) {
+//     cy.contains('Send email invite').should('be.visible').should('not.be.checked').check();
+//   }
+//   else {
+//     cy.contains('Send email invite').should('be.visible').should('not.be.checked');
+//   }
+
+//   cy.get('#textfield-adduser-firstname').clear().type(userProfile.firstName);
+//   cy.get('#textfield-adduser-lastname').clear().type(userProfile.lastName);
+//   cy.get('#textfield-adduser-email').clear().type(userProfile.email);
+//   userProfile.mobilePhone && cy.get('.vti__input.vti__phone').clear().type(userProfile.mobilePhone);
+//   userProfile.notes && cy.get('#textfield-adduser-notes').clear().type(userProfile.notes);
+  
+//   cy.get('[data-testid="save-user"]').click();
+// }
+
+// export function createUser(userProfile) {
+  // cy.get('#button-addNewUser > .v-btn__content').click();
+  // if(userProfile.admin) {
+  //   cy.contains('Admin').should('be.visible').should('not.be.checked').check();
+  // }
+  // else {
+  //   cy.contains('Admin').should('be.visible').should('not.be.checked');
+  // }
+  // if(userProfile.sendEmailInvite) {
+  //   cy.contains('Send email invite').should('be.visible').should('not.be.checked').check();
+  // }
+  // else {
+  //   cy.contains('Send email invite').should('be.visible').should('not.be.checked');
+  // }
+  // cy.get('#textfield-adduser-firstname').clear().type(userProfile.firstName);
+  // cy.get('#textfield-adduser-lastname').clear().type(userProfile.lastName);
+  // cy.get('#textfield-adduser-email').clear().type(userProfile.email);
+  // cy.get('[class="vti__input vti__phone"]').clear().type(userProfile.mobilePhone);
+  // cy.get('#textfield-adduser-notes').clear().type(userProfile.notes);
+  // cy.get('[data-testid="save-user"]').click();
+  // }
 
 /**
  * Deletes a user by email by interacting with the user list and confirmation dialog.
