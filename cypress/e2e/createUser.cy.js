@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { login, navigateToManageUsers, createUser, checkForConfirmation, logout, navigateToPageLink } from './utils';
+import { login, createUser, checkForConfirmationAlert, logout, navigateToPageLink, deleteUser } from './utils';
 
 const username = 'bitofreedom@gmail.com';
 const password = 'Password123!';
@@ -12,20 +12,21 @@ afterEach(() => {
     logout();
 });
 
-function UserProfile(firstName, lastName, email, mobilePhone, admin, sendEmailInvite, notes) {
-  this.firstName = firstName;
-  this.lastName = lastName;
-  this.email = email;     
-  this.mobilePhone = mobilePhone;
-  this.admin = admin;
-  this.sendEmailInvite = sendEmailInvite;
-  this.notes = notes;
+class UserProfile {
+  constructor(firstName, lastName, email, mobilePhone, admin, sendEmailInvite, notes) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.mobilePhone = mobilePhone;
+    this.admin = admin;
+    this.sendEmailInvite = sendEmailInvite;
+    this.notes = notes;
+  }
 }
 
 describe('Manage Users', () => {
 
   it('Can Create User w/ All Input Fields', () => {
-
     // Generate random user data using Faker.js
     const userProfile = new UserProfile(
       faker.name.firstName(),
@@ -40,11 +41,16 @@ describe('Manage Users', () => {
     navigateToPageLink('Manage Users');
     createUser(userProfile);
 
-    // Check for confirmation popup
-    checkForConfirmation();
+    // Check for confirmation alert msg
+    checkForConfirmationAlert();
 
-    // Check for the user in the list
+    // Check for the user in the Users List
+    cy.get('[id="virtualTable"]').should('be.visible').should('contain', userProfile.firstName);
     cy.get('[id="virtualTable"]').should('be.visible').should('contain', userProfile.lastName);
+    cy.get('[id="virtualTable"]').should('be.visible').should('contain', userProfile.email.toLowerCase());
+
+    // Cleanup
+    deleteUser(userProfile);
   });
 
   it('Can Create User w/ Minimum Input Fields', () => {
@@ -57,7 +63,18 @@ describe('Manage Users', () => {
 
     navigateToPageLink('Manage Users');
     createUser(userProfile);
-    // checkForConfirmation();
-  });
 
+    // Check for confirmation alert msg
+    checkForConfirmationAlert();
+
+    // Check for the user in the Users List
+    cy.get('[id="virtualTable"]').should('be.visible').should('contain', userProfile.firstName);
+    cy.get('[id="virtualTable"]').should('be.visible').should('contain', userProfile.lastName);
+    cy.get('[id="virtualTable"]').should('be.visible').should('contain', userProfile.email.toLowerCase());
+
+    // Cleanup
+    deleteUser(userProfile);
+  });
 });
+
+

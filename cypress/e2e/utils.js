@@ -40,11 +40,11 @@ export function visitPage(pagePath) {
 }
 
 /**
- * Checks for the presence of a confirmation element in the user list.
+ * Checks for the visibility of a confirmation alert toast in the UI.
+ * Specifically, it asserts that the element with the data-testid "toast-icon-success" is visible.
  */
-export function checkForConfirmation() {
-  cy.get(':nth-child(2) > :nth-child(3) > .d-flex > [data-testid="user-name-in-list"] > .v-btn__content').should('be.visible');
-  // cy.get('[data-testid="user-list"]').should('be.visible');
+export function checkForConfirmationAlert() {
+  cy.get('[data-testid="toast-icon-success"]').should('be.visible');
 }
 
 /**
@@ -64,69 +64,58 @@ export function createUser({ admin, sendEmailInvite, firstName, lastName, email,
   cy.get('#textfield-adduser-firstname').clear().type(firstName);
   cy.get('#textfield-adduser-lastname').clear().type(lastName);
   cy.get('#textfield-adduser-email').clear().type(email);
-  mobilePhone && cy.get('.vti__input.vti__phone').clear().type(mobilePhone);
+  mobilePhone && cy.get('[placeholder="Enter Mobile Number"]').should('be.visible').clear().type(mobilePhone);
   notes && cy.get('#textfield-adduser-notes').clear().type(notes);
-  
   cy.get('[data-testid="save-user"]').click();
 }
-
-// export function createUser(userProfile) {
-//   cy.get('#button-addNewUser > .v-btn__content').click();
-  
-//   if(userProfile.admin) {
-//     cy.contains('Admin').should('be.visible').should('not.be.checked').check();
-//   }
-//   else {
-//     cy.contains('Admin').should('be.visible').should('not.be.checked');
-//   }
-//   if(userProfile.sendEmailInvite) {
-//     cy.contains('Send email invite').should('be.visible').should('not.be.checked').check();
-//   }
-//   else {
-//     cy.contains('Send email invite').should('be.visible').should('not.be.checked');
-//   }
-
-//   cy.get('#textfield-adduser-firstname').clear().type(userProfile.firstName);
-//   cy.get('#textfield-adduser-lastname').clear().type(userProfile.lastName);
-//   cy.get('#textfield-adduser-email').clear().type(userProfile.email);
-//   userProfile.mobilePhone && cy.get('.vti__input.vti__phone').clear().type(userProfile.mobilePhone);
-//   userProfile.notes && cy.get('#textfield-adduser-notes').clear().type(userProfile.notes);
-  
-//   cy.get('[data-testid="save-user"]').click();
-// }
-
-// export function createUser(userProfile) {
-  // cy.get('#button-addNewUser > .v-btn__content').click();
-  // if(userProfile.admin) {
-  //   cy.contains('Admin').should('be.visible').should('not.be.checked').check();
-  // }
-  // else {
-  //   cy.contains('Admin').should('be.visible').should('not.be.checked');
-  // }
-  // if(userProfile.sendEmailInvite) {
-  //   cy.contains('Send email invite').should('be.visible').should('not.be.checked').check();
-  // }
-  // else {
-  //   cy.contains('Send email invite').should('be.visible').should('not.be.checked');
-  // }
-  // cy.get('#textfield-adduser-firstname').clear().type(userProfile.firstName);
-  // cy.get('#textfield-adduser-lastname').clear().type(userProfile.lastName);
-  // cy.get('#textfield-adduser-email').clear().type(userProfile.email);
-  // cy.get('[class="vti__input vti__phone"]').clear().type(userProfile.mobilePhone);
-  // cy.get('#textfield-adduser-notes').clear().type(userProfile.notes);
-  // cy.get('[data-testid="save-user"]').click();
-  // }
 
 /**
  * Deletes a user by email by interacting with the user list and confirmation dialog.
  * @param {string} email - The email address of the user to delete.
  */
-export function deleteUser(email) {
+export function deleteUser({ email, firstName, lastName }) {
+  navigateToPageLink('Manage Users');
+  cy.contains('Users List').should('be.visible');
+  
+  cy.contains(email.toLowerCase())
+    .should('be.visible')
+    .click()
+    .parents('tr')
+    .find('[data-testid="user-name-in-list"]')
+    .click();
 
-  cy.get(':nth-child(2) > :nth-child(3) > .d-flex > [data-testid="user-name-in-list"] > .v-btn__content').click();
-    
-  cy.get('[data-testid="delete-user-button"] > .v-btn__content').click();
-  cy.get('[data-testid="confirm"] > .v-btn__content').should('be.visible');
-  cy.get('[data-testid="confirm"] > .v-btn__content').click();
-  cy.get(':nth-child(2) > :nth-child(3) > .d-flex > [data-testid="user-name-in-list"] > .v-btn__content')
+  cy.contains('Modify User').should('be.visible');
+  cy.get('#textfield-modifyuser-firstname').should('have.value', firstName);
+  cy.get('#textfield-modifyuser-lastname').should('have.value', lastName);
+
+  cy.get('[data-testid="delete-user-button"]').click();
+  cy.get('[data-testid="confirm"]').click();
 }
+
+// export function deleteUser(userProfile) {
+//   // Navigate to the Manage Users page
+//   navigateToPageLink('Manage Users');
+
+//   // Check current page is Manage Users
+//   cy.contains('Users List').should('be.visible');
+//   // cy.get('[data-testid="user-list"]').should('be.visible');
+
+//   // Check for the user in the Users List
+//   cy.contains(userProfile.email.toLowerCase()).should('be.visible').click();
+  
+//   // Click on the user that we want to delete
+
+//   cy.get(':nth-child(2) > :nth-child(3) > .d-flex > [data-testid="user-name-in-list"] > .v-btn__content').click();
+
+//   // Check for the 'Modify User' dialog
+//   cy.contains('Modify User').should('be.visible');
+
+//   // Check correct user is selected
+//   cy.get('#textfield-modifyuser-firstname')
+//     .should('have.value', userProfile.firstName);
+//   cy.get('#textfield-modifyuser-lastname')
+//     .should('have.value', userProfile.lastName);
+
+//   cy.get('[data-testid="delete-user-button"] > .v-btn__content').click();
+//   cy.get('[data-testid="confirm"] > .v-btn__content').click();
+// }

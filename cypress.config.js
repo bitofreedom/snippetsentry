@@ -7,5 +7,7 @@ module.exports = defineConfig({
     },
     experimentalStudio: true,
     watchForFileChanges: false,
+    viewportHeight: 800,
+    viewportWidth: 1280,
   },
 });
