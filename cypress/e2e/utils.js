@@ -1,6 +1,14 @@
 // This file contains utility functions for Cypress tests.
 
 /**
+ * Visits a specific page by its path.
+ * @param {string} pagePath - The path of the page to visit.
+ */
+export function visitPage(pagePath) {
+  cy.visit(`https://beta.snippetsentry.com/${pagePath}`);
+}
+
+/**
  * Logs in a user by visiting the login page, entering credentials, and verifying login success.
  * @param {string} username - The username to log in with.
  * @param {string} password - The password to log in with.
@@ -21,14 +29,6 @@ export function login(username, password) {
 export function logout() {
   cy.get('[data-testid="profile-badge"]').should('be.visible').click();
   cy.get('[data-testid="profile-logout"]').should('be.visible').click();
-}
-
-/**
- * Visits a specific page by its path.
- * @param {string} pagePath - The path of the page to visit.
- */
-export function visitPage(pagePath) {
-  cy.visit(`https://beta.snippetsentry.com/${pagePath}`);
 }
 
 /**

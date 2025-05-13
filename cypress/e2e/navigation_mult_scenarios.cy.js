@@ -44,5 +44,5 @@ describe('Manage Users', () => {
     cy.contains('STATUS').should('be.visible');
     cy.contains('Last Updated').should('be.visible');
   });
-
+  
 });
