@@ -19,7 +19,7 @@ export function login(username, password) {
   cy.get('[class="v-field__input"]').eq(0).clear().type(username);
   cy.get('[type="password"]').clear().type(password);
   cy.contains('Login').should('be.visible').click();
-  // Verify login success
+  // Check for successful login
   cy.contains('SnippetSentry').should('be.visible');
 }
 
@@ -29,6 +29,8 @@ export function login(username, password) {
 export function logout() {
   cy.get('[data-testid="profile-badge"]').should('be.visible').click();
   cy.get('[data-testid="profile-logout"]').should('be.visible').click();
+  // Check for successful logout
+  cy.contains('Please sign-in to your account.').should('be.visible');
 }
 
 /**
@@ -69,6 +71,33 @@ export function createUser({ admin, sendEmailInvite, firstName, lastName, email,
   cy.get('[data-testid="save-user"]').click();
 }
 
+export function updateUser({ admin, sendEmailInvite, firstName, lastName, email, mobilePhone, notes }) {
+  // Select the user by email
+  cy.contains(email.toLowerCase())
+    .should('be.visible')
+    .click()
+    .parents('tr')
+    .find('[data-testid="user-name-in-list"]')
+    .click();
+
+  cy.contains('Modify User').should('be.visible');
+  // @todo: figure out how to check for the admin checkbox (if not already selected)
+  // admin && cy.get('#checkbox-modifyuser-admin')
+  //   .should('be.visible')
+  //   .not(':checked')
+  //   .check();
+  cy.get('#textfield-modifyuser-firstname').clear().type(firstName);
+  cy.get('#textfield-modifyuser-lastname').clear().type(lastName);
+  // Cannot update email address (protected field)
+  mobilePhone && cy.get('[placeholder="Enter Mobile Number"]').should('be.visible').clear().type(mobilePhone);
+  notes && cy.get('#textfield-modifyuser-notes').clear().type(notes);
+  cy.get('[data-testid="save-user"]').click();
+
+  // TODO: Check to see if this is a bug? Should the 'Modify User' page be closed after clicking the save button?
+  // Here is a workaround to close the page
+  // cy.get('[class="v-btn__content"]').should('be.visible').click();
+}
+
 /**
  * Deletes a user by email by interacting with the user list and confirmation dialog.
  * @param {string} email - The email address of the user to delete.
@@ -76,7 +105,7 @@ export function createUser({ admin, sendEmailInvite, firstName, lastName, email,
 export function deleteUser({ email, firstName, lastName }) {
   navigateToPageLink('Manage Users');
   cy.contains('Users List').should('be.visible');
-  
+  // Select the user by email
   cy.contains(email.toLowerCase())
     .should('be.visible')
     .click()
@@ -91,31 +120,3 @@ export function deleteUser({ email, firstName, lastName }) {
   cy.get('[data-testid="delete-user-button"]').click();
   cy.get('[data-testid="confirm"]').click();
 }
-
-// export function deleteUser(userProfile) {
-//   // Navigate to the Manage Users page
-//   navigateToPageLink('Manage Users');
-
-//   // Check current page is Manage Users
-//   cy.contains('Users List').should('be.visible');
-//   // cy.get('[data-testid="user-list"]').should('be.visible');
-
-//   // Check for the user in the Users List
-//   cy.contains(userProfile.email.toLowerCase()).should('be.visible').click();
-  
-//   // Click on the user that we want to delete
-
-//   cy.get(':nth-child(2) > :nth-child(3) > .d-flex > [data-testid="user-name-in-list"] > .v-btn__content').click();
-
-//   // Check for the 'Modify User' dialog
-//   cy.contains('Modify User').should('be.visible');
-
-//   // Check correct user is selected
-//   cy.get('#textfield-modifyuser-firstname')
-//     .should('have.value', userProfile.firstName);
-//   cy.get('#textfield-modifyuser-lastname')
-//     .should('have.value', userProfile.lastName);
-
-//   cy.get('[data-testid="delete-user-button"] > .v-btn__content').click();
-//   cy.get('[data-testid="confirm"] > .v-btn__content').click();
-// }
