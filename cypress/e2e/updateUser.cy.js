@@ -57,7 +57,7 @@ describe('Manage Users', () => {
     cy.get('[id="virtualTable"]').should('be.visible').should('contain', userProfile.email.toLowerCase());
 
     // Select the user by email
-    cy.contains(email.toLowerCase())
+    cy.contains(userProfile.email.toLowerCase())
       .should('be.visible')
       .click()
       .parents('tr')
@@ -66,11 +66,13 @@ describe('Manage Users', () => {
 
     cy.contains('Modify User').should('be.visible');
     cy.get('#textfield-modifyuser-email').should('be.disabled');
-    
+
+    // cy.get('[data-testid="cancel-user-drawer"] > .v-btn__content').click();
+    cy.get('[data-testid="cancel-user-drawer"]').click();
+
     // Cleanup (only used for this demonstration to limit test data)
     deleteUser(userProfile);
   });
-
 });
 
 
